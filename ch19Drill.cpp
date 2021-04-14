@@ -2,12 +2,15 @@
 
 template<typename T> 
 	struct S {
-		S(T d) : val(d) {}
+
+		S() {}
+
+		S(T t) : val(t) {}
 	
 		T& get();
 		const T& get() const;
 
-		void set(const T& d);
+		void set(const T& t);
 		T& operator=(const T&);
 private:
 	T val; 
@@ -28,18 +31,18 @@ template<class T>
 //set()
 
 template<typename T> 
-	void S<T>::set(const T& d) { val = d; }
+	void S<T>::set(const T& uj) { val = uj; }
 
 //'=' operator a set helyett >>> tehát az operator 
 //gyakorlatilag definiál egy műveletet mint egy funct
 
-template<class T> T& S<T>::operator=(const T& d)
+template<class T> T& S<T>::operator=(const T& newv)
 {
-	val = d;
+	val = newv;
 	return val;
 }
 
-// bonus de kell hogy a read:val működjön
+// Beolvasás istream kell a templeteb miatt ...hogy a konténerből tudjunk olvasni
 
 template<class T> istream& operator>>(istream& is, S<T>& ss)
 {
@@ -59,6 +62,38 @@ template<class T>
 		{
 			cin >> v;
 		}
+
+// Bonus beolvasas >>>> hibakazelés nélkül .. a MAX_INT nem működik :/
+
+template<typename T>
+istream& operator>>(istream& is, vector<T>& vt)
+{
+	T temp;
+	string s;
+	while (is >> s)
+	{
+			stringstream ss;
+			ss << s;
+			ss >> temp;
+			vt.push_back(temp);
+		
+	}
+
+	return is;
+}
+ // Bonus kiiratas >>> 
+
+template<typename T>
+ostream& operator<<(ostream& os, vector<T>& vt)
+{
+	
+	for (int i = 0; i < vt.size() - 1; ++i)
+	{
+		os << vt[i] << endl;
+	}
+	os << vt[vt.size() - 1] << endl;
+	return os;
+}
 
 int main()
 {
@@ -145,7 +180,7 @@ int main()
 
 	// Beolvasás a felhasználótól a read_val segítségével .. 
 
-	cout << "FElhasznalo adatainak beolvasasa" << endl; cout << endl;
+	cout << "FElhasznalo adatainak beolvasasa read_val lal: " << endl; cout << endl;
 	cout << "s_int = ";
 	read_val(s_int);
 	cout << "s_char = ";
@@ -156,11 +191,31 @@ int main()
 	read_val(s_string);
 
 	// egyszerű kiiratás
-
+	
 	cout << endl;
-	cout << "Outputting..." << endl;
+	cout << "Felhasznalo adatai kiiratasa a red_val után ..." << endl;
 	cout << "s_int = " << s_int.get() << endl;
 	cout << "s_char = " << s_char.get() << endl;
 	cout << "s_double = " << s_double.get() << endl;
 	cout << "s_string = " << s_string.get() << endl;
+
+
+	cout << "Felhasznalo adatainak beolvasasa >> operator ral: " << endl; cout << endl;
+	cout << "s_int = ";
+	cin >> s_int;
+	cout << "s_char = ";
+	cin >>s_char;
+	cout << "s_double = ";
+	cin >>s_double;
+	cout << "s_string = ";
+	cin>> s_string ;
+
+	cout << endl;
+	cout << "Felhasznalo adatai kiiratasa a >> után ..." << endl;
+	cout << "s_int = " << s_int.get() << endl;
+	cout << "s_char = " << s_char.get() << endl;
+	cout << "s_double = " << s_double.get() << endl;
+	cout << "s_string = " << s_string.get() << endl;
+
+
 }
